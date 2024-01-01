@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+
+  ssh-proxy:
+    build: .
+    ports:
+      - "2222:2222"
+
+    # create a folder named auth with a file named authorized_keys
+    volumes:
+      - ./auth/:/home/sshuser/.ssh/
