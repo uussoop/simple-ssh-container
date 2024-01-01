@@ -25,7 +25,7 @@ RUN echo "AllowUsers sshuser@${allowed_ip}" >> /etc/ssh/sshd_config && \
     echo "DenyUsers *" >> /etc/ssh/sshd_config
 
 RUN ssh-keygen -A
-
+RUN chown -R sshuser:sshuser /etc/ssh 
 RUN passwd -d root
 USER sshuser
 
