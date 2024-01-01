@@ -21,8 +21,7 @@ RUN apk add --update openssh && \
     sed -i 's/^#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config && \
     sed -i "s/#Port 22/Port ${SSH_PORT}/" /etc/ssh/sshd_config
     
-RUN echo "AllowUsers sshuser@${allowed_ip}" >> /etc/ssh/sshd_config && \
-    echo "DenyUsers *" >> /etc/ssh/sshd_config
+RUN echo "AllowUsers sshuser@${allowed_ip}" >> /etc/ssh/sshd_config 
 
 RUN ssh-keygen -A
 RUN chown -R sshuser:sshuser /etc/ssh 
