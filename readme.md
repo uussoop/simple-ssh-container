@@ -1,5 +1,4 @@
 
-```markdown
 # SSH Tunnel Docker Compose
 
 This Docker Compose file sets up an SSH tunnel container to allow access to private networks. 
@@ -43,4 +42,3 @@ From there, you can access any private hosts and networks allowed by your SSH ke
 - Use SSH certificates instead of keys
 - Add logging to see who logs in and when
 - Run regular security audits on keys and creds
-```
