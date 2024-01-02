@@ -6,12 +6,15 @@ services:
     build: .
     ports:
       - "2222:2222"
-
+    environment:
+      # Lock down the access to certain IP addresses
+      ALLOWED_IPS: "AllowUsers tunnel@1.2.3.4"
     configs:
       - source: ssh_authorized_keys
         # Mount the file to "/authorized_keys". The image will handle everything else
         target: /authorized_keys
         mode: 0600
+    # remember to add this to your own compose or add the composes network here for the tunnel to be accessable
 
 
 configs:

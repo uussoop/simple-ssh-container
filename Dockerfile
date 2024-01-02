@@ -31,6 +31,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && echo "Ensure generated keys are removed at this stage..." \
     && rm -rf /etc/ssh/ssh_host_*
+COPY scripts/prep-ssh-server /root/
+ENTRYPOINT ["/root/prep-ssh-server"]
 
-ENTRYPOINT ["/init"]
-CMD ["/usr/sbin/sshd", "-D","-e"]
+# CMD ["/usr/sbin/sshd", "-D","-e"]

@@ -3,6 +3,46 @@ if [ $DEBUG_MODE == true ]; then
     set -x
 fi
 
+
+
+SSH_USER_HOME="${SSH_USER_HOME:-"/home/$SSH_USER"}"
+
+# Create our SSH user
+groupadd -r -g $PGID $SSH_GROUP
+useradd --no-log-init -m -r -s /usr/bin/bash -d $SSH_USER_HOME -u $PUID -g $PGID $SSH_USER
+
+if [[ $S6_LOGGING != 1 ]]; then
+
+
+echo '
+-------------------------------------
+👋 SSH User Information
+-------------------------------------'
+echo "
+User uid:    $(id -u $SSH_USER)
+User gid:    $(id -g $SSH_USER)
+Username:    $SSH_USER
+User Group:  $SSH_GROUP
+-------------------------------------
+"
+fi
+
+
+# Check if SSH host keys are missing
+if [ ! -f $SSH_HOST_KEY_DIR/ssh_host_rsa_key ] || [ ! -f $SSH_HOST_KEY_DIR/ssh_host_ecdsa_key ] || [ ! -f $SSH_HOST_KEY_DIR/ssh_host_ed25519_key ]; then
+  echo "🏃‍♂️ Generating SSH keys for you..."
+  dpkg-reconfigure openssh-server
+  # Check if the host directory exists. Create it if needed
+  if [ ! -d $SSH_HOST_KEY_DIR ]; then
+    mkdir -p $SSH_HOST_KEY_DIR
+  fi
+  find /etc/ssh/ -type f -name "ssh_host_*" -exec mv -t $SSH_HOST_KEY_DIR "{}" \;
+fi
+
+
+
+
+
 SSH_USER_HOME="${SSH_USER_HOME:-"/home/$SSH_USER"}"
 
 #########################################
@@ -108,3 +148,5 @@ else
   echo "📡 Setting allowed IPs (from ALLOWED_IPS variable) ..."
   echo "${ALLOWED_IPS}" >> /etc/ssh/sshd_config.d/custom.conf
 fi
+
+/usr/sbin/sshd -D -e
