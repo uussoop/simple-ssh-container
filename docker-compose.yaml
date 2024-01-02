@@ -7,6 +7,13 @@ services:
     ports:
       - "2222:2222"
 
-    # create a folder named auth with a file named authorized_keys
-    volumes:
-      - ./auth/:/home/sshuser/.ssh/
+    configs:
+      - source: ssh_authorized_keys
+        # Mount the file to "/authorized_keys". The image will handle everything else
+        target: /authorized_keys
+        mode: 0600
+
+
+configs:
+  ssh_authorized_keys:
+    file: ./auth/authorized_keys
