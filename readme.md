@@ -1,4 +1,3 @@
-Here is a README.md file for the Docker Compose configuration you provided:
 
 ```markdown
 # SSH Tunnel Docker Compose
@@ -45,5 +44,3 @@ From there, you can access any private hosts and networks allowed by your SSH ke
 - Add logging to see who logs in and when
 - Run regular security audits on keys and creds
 ```
-
-Let me know if you would like me to explain or expand on any part of the README.
