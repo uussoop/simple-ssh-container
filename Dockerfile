@@ -1,22 +1,10 @@
-ARG BASE_IMAGE="debian:stable-slim"
-
+ARG BASE_IMAGE="debian:bullseye"
 FROM ${BASE_IMAGE}
 LABEL maintainer="akai"
-
-# Make sure we keep apt silent during installs
 ENV DEBIAN_FRONTEND=noninteractive \
-    PUID=9999 \
-    PGID=9999 \
-    SSH_USER="tunnel" \
-    SSH_GROUP="tunnelgroup" \
-    SSH_PORT="2222" \
-    SSH_HOST_KEY_DIR="/etc/ssh/ssh_host_keys" \
-    DEBUG_MODE="false" \
     LC_ALL="en_US.UTF-8" \
     LANG="en_US.UTF-8" \
     LANGUAGE="en_US.UTF-8"
-
-# Install SSH server and ping command
 RUN apt-get update \
     && echo "Install requirements..." \
     && apt-get -y --no-install-recommends install \
@@ -31,7 +19,13 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && echo "Ensure generated keys are removed at this stage..." \
     && rm -rf /etc/ssh/ssh_host_*
-COPY scripts/prep-ssh-server /root/
-ENTRYPOINT ["/root/prep-ssh-server"]
+# Delete existing keys if present
+RUN rm -f /etc/ssh/ssh_host_*
 
-# CMD ["/usr/sbin/sshd", "-D","-e"]
+# Regenerate keys on each build
+RUN ssh-keygen -A
+
+# Fix permissions 
+RUN chmod 700 /etc/ssh && chmod 600 /etc/ssh/ssh_host_*
+COPY entry.sh /root/
+ENTRYPOINT ["/root/entry.sh"]
